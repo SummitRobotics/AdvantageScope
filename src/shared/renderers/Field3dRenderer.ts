@@ -136,7 +136,9 @@ export type Field3dRendererCommand_AnyObj =
   | Field3dRendererCommand_AprilTagObj
   | Field3dRendererCommand_AprilTagBuiltInObj
   | Field3dRendererCommand_AxesObj
-  | Field3dRendererCommand_ConeObj;
+  | Field3dRendererCommand_ConeObj
+  | Field3dRendererCommand_LineListObj
+  | Field3dRendererCommand_ZoneGridObj;
 
 export type Field3dRendererCommand_GenericRobotObj = {
   model: string;
@@ -205,4 +207,19 @@ export type Field3dRendererCommand_ConeObj = {
   color: string;
   position: "center" | "back" | "front";
   poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_LineListObj = {
+  type: "lineList";
+  color: string;
+  size: string;
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_ZoneGridObj = {
+  type: "zoneGrid";
+  cols: number;
+  rows: number;
+  cellSize: number;
+  data: number[];
 };

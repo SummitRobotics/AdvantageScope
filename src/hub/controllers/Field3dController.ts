@@ -29,7 +29,11 @@ import {
   mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
+import {
+  Field3dRendererCommand,
+  Field3dRendererCommand_AnyObj,
+  Field3dRendererCommand_ZoneGridObj
+} from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
@@ -43,6 +47,7 @@ export default class Field3dController implements TabController {
 
   private sourceList: SourceList;
   private lastIsFTCField = false;
+  private zoneGridCache: { logKey: string; command: Field3dRendererCommand_ZoneGridObj } | null = null;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -279,9 +284,10 @@ export default class Field3dController implements TabController {
         numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
       }
       let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
+      let isZoneGrid = source.type === "zoneGrid";
       let poses: AnnotatedPose3d[] = [];
 
-      if (!isHeatmap) {
+      if (!isHeatmap && !isZoneGrid) {
         if (time !== null) {
           poses = grabPosesAuto(
             window.log,
@@ -498,6 +504,41 @@ export default class Field3dController implements TabController {
             size: source.options.size,
             poses: poses
           });
+          break;
+        case "lineList":
+          objects.push({
+            type: "lineList",
+            color: source.options.color,
+            size: source.options.size,
+            poses: poses
+          });
+          break;
+        case "zoneGrid":
+          {
+            // Zone data is static — read once per source key and cache
+            if (this.zoneGridCache !== null && this.zoneGridCache.logKey === source.logKey) {
+              objects.push(this.zoneGridCache.command);
+            } else if (time !== null) {
+              let rawData = getOrDefault(window.log, source.logKey, LoggableType.NumberArray, time, [], this.UUID);
+              if (rawData.length >= 3) {
+                const cols = Math.round(rawData[0]);
+                const rows = Math.round(rawData[1]);
+                const cellSize = rawData[2];
+                const gridData = rawData.slice(3);
+                if (gridData.length === cols * rows) {
+                  const command: Field3dRendererCommand_ZoneGridObj = {
+                    type: "zoneGrid",
+                    cols: cols,
+                    rows: rows,
+                    cellSize: cellSize,
+                    data: gridData
+                  };
+                  this.zoneGridCache = { logKey: source.logKey, command: command };
+                  objects.push(command);
+                }
+              }
+            }
+          }
           break;
         case "heatmap":
         case "heatmapLegacy":

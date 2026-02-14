@@ -26,8 +26,10 @@ import AxesManager from "./field3d/objectManagers/AxesManager";
 import ConeManager from "./field3d/objectManagers/ConeManager";
 import GamePieceManager from "./field3d/objectManagers/GamePieceManager";
 import HeatmapManager from "./field3d/objectManagers/HeatmapManager";
+import LineListManager from "./field3d/objectManagers/LineListManager";
 import RobotManager from "./field3d/objectManagers/RobotManager";
 import TrajectoryManager from "./field3d/objectManagers/TrajectoryManager";
+import ZoneGridManager from "./field3d/objectManagers/ZoneGridManager";
 
 export default class Field3dRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
@@ -479,6 +481,19 @@ export default class Field3dRendererImpl implements TabRenderer {
         break;
       case "cone":
         manager = new ConeManager(...args);
+        break;
+      case "lineList":
+        manager = new LineListManager(...args);
+        break;
+      case "zoneGrid":
+        manager = new ZoneGridManager(
+          this.wpilibCoordinateGroup,
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          this.mode,
+          false,
+          () => (this.shouldRender = true)
+        );
         break;
     }
     manager.setResolution(this.resolutionVector);

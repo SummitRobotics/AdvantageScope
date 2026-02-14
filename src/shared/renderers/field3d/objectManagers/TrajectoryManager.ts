@@ -51,11 +51,6 @@ export default class TrajectoryManager extends ObjectManager<Field3dRendererComm
       this.line.visible = true;
       this.line.material.color = new THREE.Color(object.color);
       this.line.material.linewidth = object.size === "bold" ? 6 : 2;
-      if (object.poses.length !== this.length) {
-        this.line.geometry.dispose();
-        this.line.geometry = new LineGeometry();
-        this.length = object.poses.length;
-      }
       let positionData: number[] = [];
       object.poses.forEach((annotatedPose) => {
         let translation = annotatedPose.pose.translation;

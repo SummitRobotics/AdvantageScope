@@ -519,6 +519,51 @@ const Field3dController_Config: SourceListConfig = {
       previewType: "Translation3d"
     },
     {
+      key: "lineList",
+      display: "Line List",
+      symbol: "line.diagonal",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: [
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d[]",
+        "Transform3d[]",
+        "Translation2d[]",
+        "Translation3d[]"
+      ],
+      showDocs: true,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
+        }
+      ],
+      previewType: "Translation3d"
+    },
+    {
+      key: "zoneGrid",
+      display: "Zone Grid",
+      symbol: "square.grid.3x3",
+      showInTypeName: true,
+      color: "#ffffff",
+      sourceTypes: ["NumberArray"],
+      showDocs: true,
+      options: [],
+      previewType: null
+    },
+    {
       key: "heatmap",
       display: "Heatmap",
       symbol: "map.fill",

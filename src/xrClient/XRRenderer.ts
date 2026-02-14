@@ -28,8 +28,10 @@ import AxesManager from "../shared/renderers/field3d/objectManagers/AxesManager"
 import ConeManager from "../shared/renderers/field3d/objectManagers/ConeManager";
 import GamePieceManager from "../shared/renderers/field3d/objectManagers/GamePieceManager";
 import HeatmapManager from "../shared/renderers/field3d/objectManagers/HeatmapManager";
+import LineListManager from "../shared/renderers/field3d/objectManagers/LineListManager";
 import RobotManager from "../shared/renderers/field3d/objectManagers/RobotManager";
 import TrajectoryManager from "../shared/renderers/field3d/objectManagers/TrajectoryManager";
+import ZoneGridManager from "../shared/renderers/field3d/objectManagers/ZoneGridManager";
 import { Units } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
@@ -264,6 +266,9 @@ export default class XRRenderer {
       case "trajectory":
         manager = new TrajectoryManager(...args);
         break;
+      case "lineList":
+        manager = new LineListManager(...args);
+        break;
       case "heatmap":
         manager = new HeatmapManager(
           this.wpilibCoordinateGroup,
@@ -294,6 +299,16 @@ export default class XRRenderer {
         break;
       case "cone":
         manager = new ConeManager(...args);
+        break;
+      case "zoneGrid":
+        manager = new ZoneGridManager(
+          this.wpilibCoordinateGroup,
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          "standard",
+          true,
+          () => {}
+        );
         break;
     }
     manager.setResolution(this.resolution);
